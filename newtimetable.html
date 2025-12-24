@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>L Division Timetable</title>
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background: #f0f4f8;
+    padding: 30px;
+}
+.container {
+    max-width: 520px;
+    margin: auto;
+    background: #ffffff;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+h2 {
+    text-align: center;
+}
+select, button {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+}
+.result {
+    margin-top: 20px;
+    background: #e3f2fd;
+    padding: 15px;
+    border-radius: 8px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <h2>L Division Timetable</h2>
+
+    <label>Day</label>
+    <select id="day">
+        <option value="">Select Day</option>
+        <option>Monday</option>
+        <option>Tuesday</option>
+        <option>Wednesday</option>
+        <option>Thursday</option>
+        <option>Friday</option>
+    </select>
+
+    <label>Time Slot</label>
+    <select id="time">
+        <option value="">Select Time</option>
+        <option>9-10</option>
+        <option>10:10-11:10</option>
+        <option>11:10-12:10</option>
+        <option>12:10-1:10</option>
+        <option>1:10-2:10</option>
+        <option>2:10-3:10</option>
+        <option>3:10-4:10</option>
+        <option>4:10-5:10</option>
+    </select>
+
+    <button onclick="showLecture()">Show Lecture</button>
+
+    <div class="result" id="output"></div>
+</div>
+
+<script>
+const timetable = {
+    Monday: {
+        "9-10": { subject: "English-R/English-V/English-S / BST / GER / JAP (Batch-wise)", room: "6505CR/6405CR/6502CR / 6409 CR / 5 JFC" },
+        "10:10-11:10": { subject: "English / BST / GER / JAP (Batch-wise)", room: "6505 / 6409 CR / 5 JFC" },
+        "11:10-12:10": { subject: "ECH-3 / CPPS-1 / LAUC-2 (Lab)", room: "6407L / 6115L / 6503L" },
+        "12:10-1:10": { subject: "ECH-3 / CPPS-1 / LAUC-2 (Lab)", room: "6407L / 6115L / 6503L" },
+        "1:10-2:10": { subject:"BREAK", room:"0000CR" },
+        "2:10-3:10":{ subject:"CPPS", room: "6402CR" },
+        "3:10-4:10":{ subject: "ECH", room: "6402 CR" }
+
+    },
+
+    Tuesday: {
+        "10:10-11:10": { subject: "LAUC", room: "6405 CR" },
+        "11:10-12:10": { subject: "English-R/English-V/English-S / BST / GER / JAP (Batch-wise)", room: "6405CR/6502CR/9306CR / 6409CR / 5JFC" },
+        "12:10-1:10": { subject: "BREAK", room: "0000CR"},
+        "1:10-2:10": { subject: "ECH-1 / DEL-2 / CPPS-3 (Lab)", room: "6407L / 6218L / 6104L" },
+        "2:10-3:10": { subject: "ECH-1 / DEL-2 / CPPS-3 (Lab)", room: "6407L / 6218L / 6104L" },
+        "3:10-4:10": { subject: "LS-1 / LS-2", room: "6405 CR / 6409 CR" },
+        "4:10-5:10": { subject: "LS-1 / LS-2", room: "6405 CR / 6409 CR" }
+    },
+
+    Wednesday: {
+        "9-10": { subject: "CPPS", room: "6405 CR" },
+        "10:10-11:10": { subject: "DECO", room: "6405 CR" },
+        "11:10-12:10": { subject: "ECH-1 / CPPS-2 / LAUC-3 (Lab)", room: "6407L / 9000L / 6504L" },
+        "12:10-1:10": { subject: "ECH-1 / CPPS-2 / LAUC-3 (Lab)", room: "6407L / 9000L / 6504L" },
+        "1:10-2:10":{ subject: "BREAK", room: "0000 CR"},
+        "2:10-3:10":{ subject: "ECH", room: "6405 CR" },
+        "3:10-4:10": { subject: "English-R/English-V/English-S / BST / GER / JAP (Batch-2)", room: "6504CR /6505CR /6409CR / 6401CR / 5JFC" },
+        "4:10-5:10": { subject: "English-R/English-V/English-S / BST / GER / JAP (Batch-2)", room: "6504CR /6505CR /6409CR / 6401CR / 5JFC" }
+    },
+
+    Thursday: {
+        "9-10": { subject: "ECH-3 / DEL-1 / CPPS-2 (Lab)", room: "6408L / 6107L / 6120L" },
+        "10:10-11:10": { subject: "ECH-3 / DEL-1 / CPPS-2 (Lab)", room: "6408L / 6107L / 6120L" },
+        "11:10-12:10": { subject: "LS-1 / LS-2", room: "6304 CR / 9504 CR" },
+        "12:10-1:10": { subject: "LS-1 / LS-2", room: "6304 CR / 9504 CR" },
+        "1:10-2:10": { subject: "BREAK", room: "0000 CR" },
+        "2:10-3:10": { subject: "DECO", room: "6305 CR"},
+        "3:10-4:10": { subject: "English-R/English-V/English-S / BST / GER / JAP (Batch-wise)", room: "6504CR/6505CR/6509CR / 6409 CR / 5 JFC" },
+        "4:10-5:10": { subject: "English-R/English-V/English-S / BST / GER / JAP (Batch-wise)", room: "6504CR/6505CR/6509CR / 6409 CR / 5 JFC" }
+    },
+
+    Friday: {
+        "9-10": { subject: "ECH-2 / CPPS-3 / LAUC-1 (Lab)", room: "6408L / New CC / 6503L" },
+        "10:10-11:10": { subject: "ECH-2 / CPPS-3 / LAUC-1 (Lab)", room: "6408L / New CC / 6503L" },
+        "11:10-12:10": { subject: "LAUC", room: "6405 CR" },
+        "12:10-1:10" : { subject: "BREAK", room:"0000 CR"},
+        "1:10-2:10": { subject: "DECO", room: "6501 CR" },
+        "2:10-3:10": { subject: "CPPS", room: "6501 CR" },
+        "3:10-4:10": { subject: "ECH-2 / CPPS-1 / DEL-3 (Lab)", room: "6318L / 6218L / 6206L" },
+        "4:10-5:10": { subject: "ECH-2 / CPPS-1 / DEL-3 (Lab)", room: "6318L / 6218L / 6206L" }
+    }
+};
+
+function showLecture() {
+    const day = document.getElementById("day").value;
+    const time = document.getElementById("time").value;
+    const output = document.getElementById("output");
+
+    if (!day || !time) {
+        output.innerHTML = "❌ Please select both day and time.";
+        return;
+    }
+
+    if (timetable[day] && timetable[day][time]) {
+        const data = timetable[day][time];
+        output.innerHTML = `
+            <strong>Subject:</strong> ${data.subject}<br>
+            <strong>Classroom / Lab:</strong> ${data.room}
+        `;
+    } else {
+        output.innerHTML = "✅ No lecture scheduled for this slot.";
+    }
+}
+</script>
+
+</body>
+</html>
